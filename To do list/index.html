@@ -228,6 +228,12 @@
                 renderTasks(selectedDate);
             }
         }
+        function deleteTask(){
+            if (renderTasks===null){
+                alert("no task to delete");
+
+            }
+        }
 
         function toggleCalendar() {
             const calendar = document.getElementById("calendar");
