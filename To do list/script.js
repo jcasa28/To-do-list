@@ -1,133 +1,96 @@
-let selectedDate = null;
-        const tasks = {};
+let tasks=[];
+let completedTasksList=[];
 
-        function addTask() {
-            if (!selectedDate) {
-                alert("Please select a date first.");
-                return;
-            }
-            const taskName = prompt("Enter the task name:");
-            if (taskName) {
-                if (!tasks[selectedDate]) {
-                    tasks[selectedDate] = [];
-                    addTaskDateToMenu(selectedDate); // Add the date to the menu if it doesn't exist
-                }
-                tasks[selectedDate].push(taskName);
-                renderTasks(selectedDate);
-            }
+document.addEventListener("DOMContentLoaded", function() {
+    //getting the button from the document
+    document.getElementById("add-task-button").addEventListener("click", function() {
+        let taskInput = document.getElementById("add-task");
+        let task = taskInput.value;
+        //if there is a new task written in the text box, 
+        //add the task to the list
+        if (task) {
+            tasks.push({ text: task, completed: false });
+            taskInput.value = '';
+            renderTasks();
         }
-        function deleteTask(){
-            if (renderTasks===null){
-                alert("no task to delete");
+        console.log(task);//printing to check
+    });
+});
 
-            }
+//code for display of the tasks
+function renderTasks(){
+    let taskList=document.getElementById("task-list");  
+    taskList.innerHTML='';
+
+    for(let i=0;i<tasks.length;i++){
+        let task=tasks[i];
+         // creating a list for the html document 
+        let listItem = document.createElement("li");
+        // creating the checkbox 
+        let checkbox=document.createElement("input");
+        checkbox.type="checkbox";
+        checkbox.className="task-checkbox";
+        checkbox.checked= task.completed;
+        // if its clicked, make the task complete and order again 
+        checkbox.addEventListener("change",function(){
+            task.completed=this.checked;
+            renderTasks();
+        })
+        // extracting the text from the task item
+        let taskText=document.createElement("span");
+        taskText.textContent= task.text;
+        taskText.className="task-text";
+
+        //in case its the checkbox is marked, add it to the "completed-
+        // task list"
+        if(task.completed){
+            taskText.classList.add("task-complete");
+            completedTasksList.push(listItem);
+            updateCompletedTasksList();
+            console.log(completedTasksList[i]);//testing to see whats going on
+            renderCompletedTasks();
+            
+        }else{
+            completedTasksList.pop();
         }
+        // adding the check box and the text to the listItem 
+        listItem.appendChild(checkbox);
+        listItem.appendChild(taskText);
+        //append the listitem to the taskList which is the whole task
+        //design
+        taskList.appendChild(listItem);
+        
+    }
+    
 
-        function toggleCalendar() {
-            const calendar = document.getElementById("calendar");
-            calendar.style.display = calendar.style.display === "none" ? "block" : "none";
-        }
+};
 
-        function renderTasks(date) {
-            const taskList = document.getElementById("taskList");
-            const tasksHeader = document.getElementById("tasksHeader");
-            taskList.innerHTML = '';
+function updateCompletedTasksList() {
+    completedTasksList = tasks.filter(task => task.completed);
+}
+function renderCompletedTasks() {
+    let completedTasks = document.getElementById("completed-tasks");
+    completedTasks.innerHTML = '';
 
-            if (tasks[date]) {
-                tasksHeader.textContent = `Here are your tasks for ${date}:`;
-                tasks[date].forEach(taskName => {
-                    const taskItem = document.createElement("li");
-                    taskItem.textContent = taskName;
+    if(completedTasksList.length > 0) {
+        let headerCompletedTasks = document.createElement("h3");
+        headerCompletedTasks.textContent = "Completed Tasks";
+        completedTasks.appendChild(headerCompletedTasks);
 
-                    const completeCheckbox = document.createElement("input");
-                    completeCheckbox.type = "checkbox";
-                    completeCheckbox.className = "complete-checkbox";
-                    completeCheckbox.onclick = function() {
-                        if (this.checked) {
-                            taskItem.classList.add("task-complete");
-                        } else {
-                            taskItem.classList.remove("task-complete");
-                        }
-                    };
-
-                    taskItem.appendChild(completeCheckbox);
-                    taskList.appendChild(taskItem);
-                });
-            } else {
-                tasksHeader.textContent = `No tasks for ${date}.`;
-            }
-        }
-
-        function addTaskDateToMenu(date) {
-            const taskDates = document.getElementById("taskDates");
-            const dateItem = document.createElement("li");
-            dateItem.textContent = date;
-            dateItem.onclick = () => {
-                selectedDate = date;
-                renderTasks(date);
-            };
-            taskDates.appendChild(dateItem);
-        }
-
-        document.addEventListener("DOMContentLoaded", function() {
-            const monthYear = document.getElementById("monthYear");
-            const calendarDates = document.getElementById("calendarDates");
-            const prevMonthButton = document.getElementById("prevMonth");
-            const nextMonthButton = document.getElementById("nextMonth");
-
-            let currentDate = new Date();
-
-            // Get today's date
-            const today = new Date();
-            const todayDate = `${today.getMonth() + 1}/${today.getDate()}/${today.getFullYear()}`;
-
-            function renderCalendar() {
-                calendarDates.innerHTML = '';
-                const year = currentDate.getFullYear();
-                const month = currentDate.getMonth();
-                const firstDay = new Date(year, month, 1).getDay();
-                const lastDate = new Date(year, month + 1, 0).getDate();
-
-                monthYear.textContent = currentDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
-
-                // Fill the calendar dates
-                for (let i = 0; i < firstDay; i++) {
-                    calendarDates.appendChild(document.createElement('div'));
-                }
-
-                for (let i = 1; i <= lastDate; i++) {
-                    const dateElement = document.createElement('div');
-                    const date = `${month + 1}/${i}/${year}`;
-                    dateElement.textContent = i;
-                    dateElement.addEventListener('click', () => {
-                        selectedDate = date;
-                        renderTasks(date);
-                        toggleCalendar();
-                    });
-
-                    // Highlight today's date
-                    if (date === todayDate) {
-                        dateElement.classList.add('today-date');
-                    }
-
-                    // Highlight dates with tasks
-                    if (tasks[date]) {
-                        dateElement.style.backgroundColor = '#f09272';
-                    }
-
-                    calendarDates.appendChild(dateElement);
-                }
-            }
-
-            prevMonthButton.addEventListener('click', () => {
-                currentDate.setMonth(currentDate.getMonth() - 1);
-                renderCalendar();
-            });
-
-            nextMonthButton.addEventListener('click', () => {
-                currentDate.setMonth(currentDate.getMonth() + 1);
-                renderCalendar();
-            });
-
-            renderCalendar();
+        completedTasksList.forEach(task => {
+            let listItem = document.createElement("li");
+            listItem.textContent = task.text;
+            completedTasks.appendChild(listItem);
         });
+    }
+    if (completedTasksList.length==0){
+        let headerCompletedTasks = document.querySelector("h3");
+        if (headerCompletedTasks) {
+            headerCompletedTasks.remove();
+        }
+    
+        while (completedTasks.firstChild) {
+            completedTasks.removeChild(completedTasks.firstChild);
+        }
+    }
+}

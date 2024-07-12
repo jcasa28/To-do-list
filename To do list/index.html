@@ -3,66 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Schedule</title>
-
+    <title>Document</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <h1>My To Do List</h1>
+    <h2>Make your day productive!</h2>
 
-    <header>
-        <!-- Header content goes here -->
-        <h1>To Do List</h1>
-        <p>Make your day productive!</p>
-    </header>
-    <nav>
-        <!-- Navigation links go here -->
-        <button onclick="addTask()">Add Task</button>
-        <button onclick="deleteTask()">Delete Task</button>
-        <button onclick="toggleCalendar()">Show Calendar</button>
-    </nav>
-    <main>
-        <!-- Task Menu -->
-        <aside class="task-menu">
-            <h3>Task Dates</h3>
-            <ul id="taskDates">
-                <!-- Dates with tasks will be dynamically added here -->
-            </ul>
-        </aside>
-        <div class="task-list">
-            <!-- Main content goes here -->
-            <p id="tasksHeader">Here are your tasks for today:</p>
-            <ul id="taskList">
-                <!-- Todo items will be dynamically added here -->
-            </ul>
-
-            <!-- Calendar -->
-            <div class="calendar" id="calendar">
-                <div class="calendar-header">
-                    <button id="prevMonth">Previous</button>
-                    <span id="monthYear"></span>
-                    <button id="nextMonth">Next</button>
-                </div>
-                <div class="calendar-body">
-                    <div class="calendar-weekdays">
-                        <div>Sun</div>
-                        <div>Mon</div>
-                        <div>Tue</div>
-                        <div>Wed</div>
-                        <div>Thu</div>
-                        <div>Fri</div>
-                        <div>Sat</div>
-                    </div>
-                    <div class="calendar-dates" id="calendarDates"></div>
-                </div>
-            </div>
-        </div>
-    </main>
-    <footer>
-        <!-- Footer content goes here -->
-        <p>© 2024 Jesus Casasanta. All rights reserved.</p>
-    </footer>
-
-    <!-- JavaScript for adding tasks and calendar functionality -->
+    <div class="add_task_field">
+        <label for="add-task">Add task:</label>
+        <input type="text" id="add-task">
+        <button id="add-task-button"type="submit">Add</button>
+    </div>
+    <div id="tasks-to-do">
+        
+        <ul id="task-list">
+        </ul>
+    </div>
+    <div id="completed-tasks" class="completed-section"></div>
     <script src="script.js"></script>
 </body>
 </html>
